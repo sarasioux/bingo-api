@@ -8,8 +8,8 @@ const fs = require('fs');
 const { createCanvas, loadImage, registerFont } = require('node-canvas');
 
 // Constants
-const siteUrl = 'http://localhost:8080/';
-const apiUrl = 'http://localhost:3000/';
+const siteUrl = 'https://bingomorph.netlify.app/';
+const apiUrl = 'https://bingomorph-api.herokuapp.com/';
 //const provider = 'wss://mainnet.infura.io/ws/v3/72e71a4f135741c9861fda5ad3896e57';
 //const provider = 'http://127.0.0.1:7545';
 const provider = 'wss://kovan.infura.io/ws/v3/59eea23701b24562a3df2b752064820d';
