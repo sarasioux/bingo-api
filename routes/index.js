@@ -58,7 +58,7 @@ router.get('/bingo-img/:id', function(req, res) {
             stream.pipe(res);
           });
         } else {
-          var s = fs.createReadStream(process.cwd() + '/assets/bingo-card-stonersrock.png');
+          var s = fs.createReadStream(process.cwd() + '/assets/generating-card.png');
           s.on('open', function () {
             res.set('Content-Type', 'image/png');
             s.pipe(res);
@@ -79,7 +79,7 @@ router.get('/bingo-art/:id', function(req, res) {
           stream.pipe(res);
         });
       } else {
-        var s = fs.createReadStream(process.cwd() + '/assets/bingo-card-stonersrock.png');
+        var s = fs.createReadStream(process.cwd() + '/assets/generating-art.png');
         s.on('open', function () {
           res.set('Content-Type', 'image/png');
           s.pipe(res);
@@ -118,8 +118,7 @@ const cardExists = async function(id) {
 
 const cardIsCurrent = async function(id) {
   try {
-    const currentGame = await deployed.getCurrentGame.call({from: ownerAccount, value: 0});
-    const currentGameFloor = await deployed.gameFloors.call(currentGame, {from: ownerAccount, value: 0});
+    const currentGameFloor = await deployed.gameFloor.call({from: ownerAccount, value: 0});
     if(id > currentGameFloor) {
       return true;
     }
@@ -245,7 +244,9 @@ const makeCard = async function(id) {
 const makeArt = async function(id) {
   
   const file = './art/' + id;
-
+  if(fs.existsSync(file + '.png')) {
+    return fs.createReadStream(file + '.png');
+  }
   
   // Get card randomness values
   let card = await deployed.generateCard.call(id, {from: ownerAccount, value: 0});
@@ -371,9 +372,6 @@ const makeArt = async function(id) {
   };
   
   await p5.createSketch(sketch);
-  if(fs.existsSync(file + '.png')) {
-    return fs.createReadStream(file + '.png');
-  }
   return fs.createReadStream(process.cwd() + '/assets/generating-art.png');
 };
 
