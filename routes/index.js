@@ -5,7 +5,7 @@ const TruffleContract = require("@truffle/contract");
 const p5 = require('node-p5');
 const fs = require('fs');
 
-const { createCanvas, loadImage, registerFont } = require('node-canvas');
+const { createCanvas, loadImage, registerFont } = require('canvas');
 
 // Init Graph client data
 const { createClient } = require('@urql/core');
@@ -297,9 +297,14 @@ const makeArt = async function(id) {
       canvas = p.createCanvas(700, 700);
       setTimeout(() => {
         console.log('saving canvas', file);
-        p.saveCanvas(canvas, file, 'png').then(filename => {
-          console.log(`saved the canvas as ${filename}`);
-        });
+        p.saveCanvas(canvas, file, 'png')
+          .then(filename => {
+            console.log(`saved the canvas as ${filename}`);
+          })
+          .catch(err)
+          {
+            console.log('error saving canvas', err);
+          };
       }, 100);
     },
     p.draw = () => {
