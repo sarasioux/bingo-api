@@ -1,11 +1,18 @@
 const express = require('express');
-const fetch = require('node-fetch');
+const fetch = require('isomorphic-unfetch');
 const Web3 = require('web3');
 const TruffleContract = require("@truffle/contract");
 const p5 = require('node-p5');
 const fs = require('fs');
 
 const { createCanvas, loadImage, registerFont } = require('node-canvas');
+
+// Init Graph client data
+const { createClient } = require('@urql/core');
+const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v0.0.2";
+const graphClient = createClient({
+  url: APIURL
+});
 
 // Constants
 const siteUrl = 'https://bingomorph.netlify.app/';
@@ -155,8 +162,11 @@ const makeBlank = async function() {
 
 const makeCard = async function(id) {
   // Get card randomness values
+  let response = await deployed.getCurrent.call();
+  const gameId = parseInt(response.game);
+  
   let card = await deployed.generateCard.call(id, {from: ownerAccount, value: 0});
-  let systemBalls = await getBalls();
+  let systemBalls = await getBalls(gameId);
   let balls = {};
   for(let i=0; i<systemBalls.length; i++) {
     balls[systemBalls[i]] = true;
@@ -250,7 +260,8 @@ const makeArt = async function(id) {
   
   // Get card randomness values
   let card = await deployed.generateCard.call(id, {from: ownerAccount, value: 0});
-  let systemBalls = await getBalls();
+  //let systemBalls = await getBalls();
+  let systemBalls = await getCardBalls(id);
   let allBalls = {};
   for (let i = 0; i < systemBalls.length; i++) {
     allBalls[systemBalls[i]] = true;
@@ -379,14 +390,48 @@ const makeColor = function(num) {
   return Math.round((num/75)*255);
 };
 
-const getBalls = async function() {
+const getCardBalls = async function(cardId) {
+  const query = `
+            query {
+                token(id: ${cardId}) {
+                    game {
+                      balls {
+                        ball
+                      }
+                    }
+                }
+            }
+        `;
+  let response = await graphClient.query(query).toPromise();
+  console.log('gameball response', response);
+  
   let balls = [];
-  for(let i=1; i<76; i++) {
-    let ball = await deployed.Balls.call(i);
-    if(ball) {
-      balls.push(i);
+  if(response.data.token.game.balls.length > 0) {
+    for(let i=0; i<response.data.token.game.balls.length; i++) {
+      balls.push(parseInt(response.data.token.game.balls[i].ball));
     }
   }
+  return balls;
+};
+
+const getBalls = async function(gameId) {
+  let balls = [];
+  const query = `
+            query {
+                game(id: ${gameId}) {
+                    balls {
+                      ball
+                    }
+                }
+            }
+        `;
+  let response = await graphClient.query(query).toPromise();
+  if(response.data.game.balls.length > 0) {
+    for(let i=0; i<response.data.game.balls.length; i++) {
+      balls.push(parseInt(response.data.game.balls[i].ball));
+    }
+  }
+  
   return balls;
 };
 
