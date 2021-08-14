@@ -296,7 +296,7 @@ const makeArt = async function(id) {
     p.setup = () => {
       canvas = p.createCanvas(700, 700);
       setTimeout(() => {
-        fs.writeFile(`${file}.png`, p.getCanvasDataURL(canvas).replace(/^data:image\/png;base64,/, ""), 'base64', err => {
+        fs.writeFile(`${file}.png`, p.getCanvasDataURL(canvas).replace(/^data:image\/png;base64,/, ""), { encoding: 'base64', flag: 'w+' }, err => {
           if(err) console.error(err);
           else console.log('file saved', file + '.png');
         });
