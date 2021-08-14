@@ -253,7 +253,7 @@ const makeCard = async function(id) {
 
 const makeArt = async function(id) {
   
-  const file = './art/' + id;
+  const file = process.cwd() + '/art/' + id;
   if(fs.existsSync(file + '.png')) {
     return fs.createReadStream(file + '.png');
   }
