@@ -301,10 +301,9 @@ const makeArt = async function(id) {
           .then(filename => {
             console.log(`saved the canvas as ${filename}`);
           })
-          .catch(err)
-          {
+          .catch(err => {
             console.log('error saving canvas', err);
-          };
+          });
       }, 100);
     },
     p.draw = () => {
