@@ -296,6 +296,7 @@ const makeArt = async function(id) {
     p.setup = () => {
       canvas = p.createCanvas(700, 700);
       setTimeout(() => {
+        console.log('saving canvas', file);
         p.saveCanvas(canvas, file, 'png').then(filename => {
           console.log(`saved the canvas as ${filename}`);
         });
