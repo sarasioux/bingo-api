@@ -254,9 +254,13 @@ const makeCard = async function(id) {
 const makeArt = async function(id) {
   
   const file = process.cwd() + '/art/' + id;
+  console.log('file', file);
   if(fs.existsSync(file + '.png')) {
+    console.log('file found');
     return fs.createReadStream(file + '.png');
   }
+  
+  console.log('file not found');
   
   // Get card randomness values
   let card = await deployed.generateCard.call(id, {from: ownerAccount, value: 0});
