@@ -4,6 +4,7 @@ const Web3 = require('web3');
 const TruffleContract = require("@truffle/contract");
 const p5 = require('node-p5');
 const fs = require('fs');
+const Readable = require('stream').Readable;
 
 const { createCanvas, loadImage, registerFont } = require('canvas');
 
@@ -253,15 +254,6 @@ const makeCard = async function(id) {
 
 const makeArt = async function(id) {
   
-  const file = process.cwd() + '/art/' + id;
-  console.log('file', file);
-  if(fs.existsSync(file + '.png')) {
-    console.log('file found');
-    return fs.createReadStream(file + '.png');
-  }
-  
-  console.log('file not found');
-  
   // Get card randomness values
   let card = await deployed.generateCard.call(id, {from: ownerAccount, value: 0});
   //let systemBalls = await getBalls();
@@ -286,32 +278,19 @@ const makeArt = async function(id) {
     }
   }
   
-  console.log('allBalls', allBalls);
-  console.log('card', card);
-  console.log('balls', balls);
-
+  let canvas, stream;
+  p5.registerMethod('post', function() {
+    let data = this.p5.getCanvasDataURL(canvas).split(';base64,')[1];
+    const buffer = Buffer.from(data, "base64");
+    stream = new Readable();
+    stream.push(buffer);
+    stream.push(null);
+  });
   
-  let canvas;
   const sketch = function(p) {
     p.setup = () => {
       canvas = p.createCanvas(700, 700);
-      setTimeout(() => {
-        fs.writeFile(`${file}.png`, p.getCanvasDataURL(canvas).replace(/^data:image\/png;base64,/, ""), { encoding: 'base64', flag: 'w+' }, err => {
-          if(err) console.error(err);
-          else console.log('file saved', file + '.png');
-        });
-        /*
-        console.log(data);
-        console.log('saving canvas', file);
-        p.saveCanvas(canvas, file, 'png')
-          .then(filename => {
-            console.log(`saved the canvas as ${filename}`);
-          })
-          .catch(err => {
-            console.log('error saving canvas', err);
-          });
-          */
-      }, 100);
+      p.noLoop();
     },
     p.draw = () => {
           p.background(makeColor(card.B[0]), makeColor(card.O[0]), makeColor(card.O[4]));
@@ -394,12 +373,11 @@ const makeArt = async function(id) {
             );
         
           }
-  
     }
   };
   
   await p5.createSketch(sketch);
-  return fs.createReadStream(process.cwd() + '/assets/generating-art.png');
+  return stream;
 };
 
 const makeColor = function(num) {
@@ -419,7 +397,6 @@ const getCardBalls = async function(cardId) {
             }
         `;
   let response = await graphClient.query(query).toPromise();
-  console.log('gameball response', response);
   
   let balls = [];
   if(response.data.token.game.balls.length > 0) {
