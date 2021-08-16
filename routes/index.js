@@ -263,20 +263,21 @@ const makeArt = async function(id) {
     allBalls[systemBalls[i]] = true;
   }
   
-  let balls = [];
+  let balls = {};
   for(let k=0; k<card.length; k++) {
     for(let i=0; i<5; i++) {
-      if(allBalls[card[k][i]] == true) {
-        balls.push(card[k][i]);
+      if(allBalls[card[k][i]] === true) {
+        balls[card[k][i]] = true;
       }
     }
   }
   
-  if(balls.length < 6) {
-    for(i=0; i<6-balls.length; i++) {
-      balls.push(i+1);
-    }
-  }
+  let nums = {};
+  for(let i=0; i<card.B.length; i++) { nums[card.B[i]] = true; }
+  for(let i=0; i<card.I.length; i++) { nums[card.I[i]] = true; }
+  for(let i=0; i<card.N.length; i++) { nums[card.N[i]] = true; }
+  for(let i=0; i<card.G.length; i++) { nums[card.G[i]] = true; }
+  for(let i=0; i<card.O.length; i++) { nums[card.O[i]] = true; }
   
   let canvas, stream;
   p5.registerMethod('post', function() {
@@ -287,92 +288,54 @@ const makeArt = async function(id) {
     stream.push(null);
   });
   
+  let from;
+  let to;
+  
+  function getAngle(num) {
+    return (num/75) * 360;
+  }
+  
+  function getX(angle, length) {
+    return 250 + (length * Math.sin(angle * (Math.PI/180)));
+  }
+  
+  function getY(angle, length) {
+    return 250 + (length * Math.cos(angle * (Math.PI/180)));
+  }
+  
   const sketch = function(p) {
     p.setup = () => {
       canvas = p.createCanvas(700, 700);
       p.noLoop();
+      from = p.color(255, 0, 0, 0.3 * 255);
+      to = p.color(0, 0, 255, 0.3 * 255);
     },
     p.draw = () => {
-          p.background(makeColor(card.B[0]), makeColor(card.O[0]), makeColor(card.O[4]));
-          p.stroke(0);
-      
-          p.strokeWeight(0);
-          for(let i=0; i<balls.length; i++) {
-            let a=i;
-            let b=i+1;
-            let c=i+2;
-            if(b>=balls.length) {
-              b=0;
-              c=1;
-            } else if(c>=balls.length) {
-              c=0;
-            }
-            p.fill(makeColor(balls[b]), makeColor(balls[a]), makeColor(balls[c]));
-            p.bezier(
-              300, 300,
-              balls[a]+10, balls[b],
-              balls[c]-100, balls[a],
-              300, 300
-            );
+      p.background(255);
+  
+      //colorMode(RGB);
+      for(let i=0; i<75; i++) {
+        p.strokeWeight(0.2);
+        p.stroke(160);
+        p.noFill();
+        if(nums[i]) {
+          if(balls[i]) {
+            p.strokeWeight(0.5);
+            p.fill(p.lerpColor(from, to, i/75));
+            p.stroke(p.lerpColor(from, to, i/75));
+          } else {
+            p.noFill();
+            p.strokeWeight(1);
+            p.stroke(100);
           }
-      
-          for(let i=0; i<balls.length; i++) {
-            let a=i;
-            let b=i+1;
-            let c=i+2;
-            if(b>=balls.length) {
-              b=0;
-              c=1;
-            } else if(c>=balls.length) {
-              c=0;
-            }
-            p.fill(makeColor(balls[c]), makeColor(balls[b]), makeColor(balls[a]));
-            p.bezier(
-              300, 300,
-              balls[c]*balls[b]-100, balls[b]*balls[a]-100,
-              balls[a]*balls[b]-100, balls[c]*balls[a]-100,
-              300, 300
-            );
-          }
-      
-          for(let i=0; i<balls.length; i++) {
-            let a=i;
-            let b=i+1;
-            let c=i+2;
-            if(b>=balls.length) {
-              b=0;
-              c=1;
-            } else if(c>=balls.length) {
-              c=0;
-            }
-            p.fill(makeColor(balls[a]), makeColor(balls[b]), makeColor(balls[c]));
-            p.bezier(
-              300, 300,
-              balls[a]*balls[a], balls[b]*balls[b],
-              balls[b]*balls[b], balls[c]*balls[c],
-              300, 300
-            );
-          }
-      
-          for(let i=0; i<balls.length; i++) {
-            let a=i;
-            let b=i+1;
-            let c=i+2;
-            if(b>=balls.length) {
-              b=0;
-              c=1;
-            } else if(c>=balls.length) {
-              c=0;
-            }
-            p.fill(makeColor(balls[c]), makeColor(balls[a]), makeColor(balls[b]));
-            p.bezier(
-              300, 300,
-              balls[a], balls[b]*balls[b],
-              balls[b], balls[c]*balls[c],
-              300, 300
-            );
-        
-          }
+        }
+        p.bezier(
+          (card.B[0]/75)*700+100, (card.B[4]/75)*700+100,
+          getX(getAngle(i), 500), getY(getAngle(i), 500),
+          getX(getAngle(i), 500)+2*i, getY(getAngle(i), 500)+2*i,
+          (card.O[0]/75)*700-100, (card.O[4]/75)*700-100
+        );
+      }
     }
   };
   
