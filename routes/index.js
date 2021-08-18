@@ -126,7 +126,7 @@ const cardExists = async function(id) {
 
 const cardIsCurrent = async function(id) {
   try {
-    const currentGameFloor = await deployed.gameFloor.call({from: ownerAccount, value: 0});
+    const currentGameFloor = parseInt(await deployed.gameFloor.call({from: ownerAccount, value: 0}));
     if(id > currentGameFloor) {
       return true;
     }
