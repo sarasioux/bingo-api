@@ -174,9 +174,6 @@ const makeCard = async function(id) {
     balls[systemBalls[i]] = true;
   }
   
-  console.log('systemballs', systemBalls);
-  console.log('balls', balls);
-  
   const canvas = createCanvas(700, 700);
   let image = await loadImage(process.cwd() + '/assets/bingo-card-stonersrock.png');
   
@@ -386,7 +383,6 @@ const getBalls = async function(gameId) {
             }
         `;
   let response = await graphClient.query(query).toPromise();
-  console.log('graph response', response);
   if(response.data.game && response.data.game.balls.length > 0) {
     for(let i=0; i<response.data.game.balls.length; i++) {
       balls.push(parseInt(response.data.game.balls[i].ball));
