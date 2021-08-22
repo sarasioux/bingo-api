@@ -173,6 +173,9 @@ const makeCard = async function(id) {
     balls[systemBalls[i]] = true;
   }
   
+  console.log('systemballs', systemBalls);
+  console.log('balls', balls);
+  
   const canvas = createCanvas(700, 700);
   let image = await loadImage(process.cwd() + '/assets/bingo-card-stonersrock.png');
   
