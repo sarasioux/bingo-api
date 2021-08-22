@@ -385,7 +385,8 @@ const getBalls = async function(gameId) {
             }
         `;
   let response = await graphClient.query(query).toPromise();
-  if(response.data.game.balls.length > 0) {
+  console.log('graph response', response);
+  if(response.data.game && response.data.game.balls.length > 0) {
     for(let i=0; i<response.data.game.balls.length; i++) {
       balls.push(parseInt(response.data.game.balls[i].ball));
     }
