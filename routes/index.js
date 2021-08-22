@@ -16,7 +16,7 @@ const graphClient = createClient({
 });
 
 // Constants
-const siteUrl = 'https://bingomorph.netlify.app/';
+const siteUrl = 'https://bingoswap.art/';
 const apiUrl = 'https://bingomorph-api.herokuapp.com/';
 //const provider = 'wss://mainnet.infura.io/ws/v3/72e71a4f135741c9861fda5ad3896e57';
 //const provider = 'http://127.0.0.1:7545';
