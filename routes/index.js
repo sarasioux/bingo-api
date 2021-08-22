@@ -184,7 +184,7 @@ const makeCard = async function(id) {
   ctx.font = '65px "Source Code Pro"';
   
   let defaultColor = '#000000';
-  let chosenColor = '#7B0E72';
+  let chosenColor = '#DC2305';
   
   // B
   for(let i=0; i<5; i++) {
