@@ -253,6 +253,7 @@ const makeCard = async function(id) {
   return stream;
 }
 
+/*
 const makeArt = async function(id) {
   
   // Get card randomness values
@@ -343,6 +344,61 @@ const makeArt = async function(id) {
   await p5.createSketch(sketch);
   return stream;
 };
+*/
+
+const makeArt = async function(id) {
+  
+  // Get card randomness values
+  let card = await deployed.generateCard.call(id, {from: ownerAccount, value: 0});
+  let systemBalls = await getCardBalls(id);
+  let canvas, stream;
+  p5.registerMethod('post', function() {
+    let data = this.p5.getCanvasDataURL(canvas).split(';base64,')[1];
+    const buffer = Buffer.from(data, "base64");
+    stream = new Readable();
+    stream.push(buffer);
+    stream.push(null);
+  });
+  
+  let start = systemBalls[0];
+  let saturation = 10 + (start/75)*80;
+  
+  const sketch = function(p) {
+    p.setup = () => {
+      canvas = p.createCanvas(700, 700);
+      p.noLoop();
+    },
+    p.draw = () => {
+      p.background(255);
+
+      let size=700/5;
+      p.noStroke();
+      p.colorMode(p.HSB, 90);
+      p.background(start, saturation-10, 100);
+
+      for(let i=0; i<5; i++) {
+        for(let k=0; k<5; k++) {
+          let num = parseInt(card[i][k]);
+          let found = false;
+          for(let n=0; n<systemBalls.length; n++) {
+            if(num === systemBalls[n]) {
+              found = true;
+            }
+          }
+          if(found) {
+            p.fill(num, saturation+30, 100);
+          } else {
+            p.noFill();
+          }
+          p.square(i*size, k*size, size);
+        }
+      }
+    }
+  };
+  
+  await p5.createSketch(sketch);
+  return stream;
+};
 
 const makeColor = function(num) {
   return Math.round((num/75)*255);
@@ -353,7 +409,7 @@ const getCardBalls = async function(cardId) {
             query {
                 token(id: ${cardId}) {
                     game {
-                      balls {
+                      balls(orderBy: drawtime, orderDirection: asc) {
                         ball
                       }
                     }
