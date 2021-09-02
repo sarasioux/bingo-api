@@ -361,7 +361,7 @@ const makeArt = async function(id) {
   });
   
   let start = systemBalls[0];
-  let saturation = 10 + (start/75)*80;
+  let saturation = 30 + (start/75)*50;
   
   const sketch = function(p) {
     p.setup = () => {
@@ -373,7 +373,7 @@ const makeArt = async function(id) {
 
       let size=700/5;
       p.noStroke();
-      p.colorMode(p.HSB, 90);
+      p.colorMode(p.HSB, 75);
       p.background(start, saturation-10, 100);
 
       for(let i=0; i<5; i++) {
@@ -386,7 +386,7 @@ const makeArt = async function(id) {
             }
           }
           if(found) {
-            p.fill(num, saturation+30, 100);
+            p.fill(makeColor(num, start), saturation+10, 100);
           } else {
             p.noFill();
           }
@@ -400,8 +400,12 @@ const makeArt = async function(id) {
   return stream;
 };
 
-const makeColor = function(num) {
-  return Math.round((num/75)*255);
+const makeColor = function(num, start) {
+  let color = (((start + 80)*num) % 75) + 1;
+  if(color > 75) {
+    color = color - 75;
+  }
+  return color;
 };
 
 const getCardBalls = async function(cardId) {
