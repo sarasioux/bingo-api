@@ -140,6 +140,9 @@ const cardIsCurrent = async function(id) {
 };
 
 const getCard = async function(id) {
+    // @TODO REMOVE THIS AFTER NEXT CONTRACT DEPLOY
+    return true;
+    
     try {
         const cardExists = await deployed.cardRandomness.call(id, {from: ownerAccount, value: 0});
         if(cardExists > 0) {
