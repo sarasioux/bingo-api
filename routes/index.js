@@ -10,7 +10,7 @@ const { createCanvas, loadImage, registerFont } = require('canvas');
 
 // Init Graph client data
 const { createClient } = require('@urql/core');
-const graphApiUrl = "https://api.studio.thegraph.com/query/4841/bingo/v0.1.4";
+const graphApiUrl = "https://api.studio.thegraph.com/query/4841/bingo/v0.1.5";
 const graphClient = createClient({
   url: graphApiUrl,
   requestPolicy: 'network-only'
@@ -140,9 +140,6 @@ const cardIsCurrent = async function(id) {
 };
 
 const getCard = async function(id) {
-    // @TODO REMOVE THIS AFTER NEXT CONTRACT DEPLOY
-    return true;
-    
     try {
         const cardExists = await deployed.cardRandomness.call(id, {from: ownerAccount, value: 0});
         if(cardExists > 0) {
