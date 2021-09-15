@@ -10,7 +10,7 @@ const { createCanvas, loadImage, registerFont } = require('canvas');
 
 // Init Graph client data
 const { createClient } = require('@urql/core');
-const graphApiUrl = "https://api.studio.thegraph.com/query/4841/bingo/v0.1.6";
+const graphApiUrl = "https://api.studio.thegraph.com/query/4841/bingo/v0.1.7";
 const graphClient = createClient({
   url: graphApiUrl,
   requestPolicy: 'network-only'
@@ -19,6 +19,8 @@ const graphClient = createClient({
 // Constants
 const siteUrl = 'https://bingoswap.art/';
 const apiUrl = 'https://api.bingoswap.art/';
+//const siteUrl = 'http://localhost:8080/';
+//const apiUrl = 'http://localhost:3000/';
 //const provider = 'wss://mainnet.infura.io/ws/v3/72e71a4f135741c9861fda5ad3896e57';
 //const provider = 'http://127.0.0.1:7545';
 const provider = 'wss://kovan.infura.io/ws/v3/59eea23701b24562a3df2b752064820d';
