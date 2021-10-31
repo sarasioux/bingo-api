@@ -1,0 +1,5 @@
+- deploy to mainnet
+- copy contracts json to public
+- update infura urls
+- put address into subgraph and deploy
+- update subgraph urls

@@ -10,7 +10,7 @@ const { createCanvas, loadImage, registerFont } = require('canvas');
 
 // Init Graph client data
 const { createClient } = require('@urql/core');
-const graphApiUrl = "https://api.studio.thegraph.com/query/4841/bingo/v0.1.7";
+const graphApiUrl = "https://api.studio.thegraph.com/query/4841/bingo/v1.0.0";
 const graphClient = createClient({
   url: graphApiUrl,
   requestPolicy: 'network-only'
@@ -21,9 +21,9 @@ const siteUrl = 'https://bingoswap.art/';
 const apiUrl = 'https://api.bingoswap.art/';
 //const siteUrl = 'http://localhost:8080/';
 //const apiUrl = 'http://localhost:3000/';
-//const provider = 'wss://mainnet.infura.io/ws/v3/72e71a4f135741c9861fda5ad3896e57';
+const provider = 'wss://mainnet.infura.io/ws/v3/59eea23701b24562a3df2b752064820d';
 //const provider = 'http://127.0.0.1:7545';
-const provider = 'wss://kovan.infura.io/ws/v3/59eea23701b24562a3df2b752064820d';
+//const provider = 'wss://kovan.infura.io/ws/v3/59eea23701b24562a3df2b752064820d';
 const ownerAccount = '0xd83Dd8A288270512b8A46F581A8254CD971dCb09';                  // Address of the current queryer
 
 registerFont(process.cwd() + '/assets/SourceCodePro-Bold.ttf', { family: 'Source Code Pro' });
@@ -157,7 +157,7 @@ const getCard = async function(id) {
 };
 
 const makeBlank = async function() {
-  var s = fs.createReadStream(process.cwd() + '/assets/bingo-card-stonersrock.png');
+  var s = fs.createReadStream(process.cwd() + '/assets/bingo-card.jpg');
   s.on('open', function () {
     res.set('Content-Type', type);
     s.pipe(res);
@@ -177,7 +177,7 @@ const makeCard = async function(id) {
   }
   
   const canvas = createCanvas(700, 700);
-  let image = await loadImage(process.cwd() + '/assets/bingo-card-stonersrock.png');
+  let image = await loadImage(process.cwd() + '/assets/bingo-card.jpg');
   
   let ctx = canvas.getContext('2d');
   ctx.drawImage(image, 0, 0);
