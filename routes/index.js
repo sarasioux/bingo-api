@@ -10,7 +10,7 @@ const { createCanvas, loadImage, registerFont } = require('canvas');
 
 // Init Graph client data
 const { createClient } = require('@urql/core');
-const graphApiUrl = "https://api.studio.thegraph.com/query/4841/bingo/v1.0.0";
+const graphApiUrl = "https://api.studio.thegraph.com/query/4841/bingo/v1.0.1";
 const graphClient = createClient({
   url: graphApiUrl,
   requestPolicy: 'network-only'
